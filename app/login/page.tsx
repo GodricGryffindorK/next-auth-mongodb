@@ -15,6 +15,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface SignInSchema {
   email: string,
@@ -67,11 +68,14 @@ export default function SignInSide() {
           }}
           className="mx-auto"
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Image src={"/logo_grey.png"}
+            width={300}
+            height={500}
+            alt="Picture of the author" 
+            className='mb-16'
+            />
           <Typography component="h1" variant="h5">
-            Sign in
+            Login with your account.
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} className="mt-4">
             <TextField
@@ -112,13 +116,9 @@ export default function SignInSide() {
               sx={{ mt: 3, mb: 2 }}
               className="mt-8"
             >
-              Sign In
+              Login
             </Button>
-            {error === "OK" ? (
-              <Alert variant="outlined" severity="success">
-                Sign in Success. Welcome.
-              </Alert>
-            ) : error != "" ? (
+            {error != "" ? (
               <Alert variant="outlined" severity="error">
                 Error: {error}
               </Alert>
@@ -127,9 +127,9 @@ export default function SignInSide() {
               <Grid item xs>
               </Grid>
               <Grid item>
-                <Link href="/signup">
+                <Link href="/register">
                   <Typography variant='button' className='text-blue-900 underline'>
-                    {"Don't have an account? Sign Up"}
+                    {"Don't have an account? Register"}
                   </Typography>
                 </Link>
               </Grid>

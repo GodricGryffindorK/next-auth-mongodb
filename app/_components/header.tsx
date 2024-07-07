@@ -21,7 +21,7 @@ function Header() {
             <AppBar component="nav">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <img src='./logo.png' />
+                        <img src='./logo.png' className='h-[60px]'/>
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         </Box>

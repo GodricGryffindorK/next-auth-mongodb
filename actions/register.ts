@@ -3,7 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 
-export const register = async (values: any) => {
+export const userRegister = async (values: any) => {
   const { email, password, name } = values;
 
   try {

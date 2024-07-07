@@ -1,77 +1,150 @@
-"use client";
-import { FormEvent, useRef, useState } from "react";
+"use client"
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import { Alert } from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Link from 'next/link';
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { register } from "@/actions/register";
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useState } from 'react';
+import { userRegister } from "@/actions/register";
 
-export default function Register() {
-  const [error, setError] = useState<string>();
+interface SignUpSchema {
+  email: string,
+  name: string
+  password: string,
+}
+
+export default function SignInSide() {
+
+  const [error, setError] = useState("");
   const router = useRouter();
-  const ref = useRef<HTMLFormElement>(null);
+  const { register, handleSubmit, formState: { errors } } = useForm<SignUpSchema>();
 
-  const handleSubmit = async (formData: FormData) => {
-    const r = await register({
-      email: formData.get("email"),
-      password: formData.get("password"),
-      name: formData.get("name"),
+  const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {
+    console.log(data)
+    const res = await userRegister({
+      email: data.email,
+      name: data.name,
+      password: data.password,
     });
-    ref.current?.reset();
-    if (r?.error) {
-      setError(r.error);
+    if (res?.error) {
+      setError(res.error as string);
       return;
     } else {
       return router.push("/login");
     }
   };
 
+
   return (
-    <section className="w-full h-screen flex items-center justify-center">
-      <form
-        ref={ref}
-        action={handleSubmit}
-        className="p-6 w-full max-w-[400px] flex flex-col justify-between items-center gap-2 
-            border border-solid border-black bg-white rounded text-black"
-      >
-        {error && <div className="">{error}</div>}
-        <h1 className="mb-5 w-full text-2xl font-bold">Register</h1>
-
-        <label className="w-full text-sm">Full Name</label>
-        <input
-          type="text"
-          placeholder="Full Name"
-          className="w-full h-8 border border-solid border-black py-1 px-2.5 rounded text-[13px]"
-          name="name"
-        />
-
-        <label className="w-full text-sm">Email</label>
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full h-8 border border-solid border-black py-1 px-2.5 rounded"
-          name="email"
-        />
-
-        <label className="w-full text-sm">Password</label>
-        <div className="flex w-full">
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full h-8 border border-solid border-black py-1 px-2.5 rounded"
-            name="password"
-          />
-        </div>
-
-        <button className="w-full rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-          Sign up
-        </button>
-
-        <Link
-          href="/login"
-          className="text-sm text-[#888] transition duration-150 ease hover:text-black"
+    <Grid container className="h-screen">
+      <CssBaseline />
+      <Grid
+        item
+        xs={false}
+        sm={4}
+        md={7}
+        className="bg-cover bg-left"
+        style={{ backgroundImage: 'url("./1 (4).png")' }}
+      />
+      <Grid item xs={10} sm={8} md={5} component={Paper} elevation={6} square className="flex items-center">
+        <Box
+          sx={{
+            my: 4,
+            mx: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
         >
-          Already have an account?
-        </Link>
-      </form>
-    </section>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Register
+          </Typography>
+          <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} className="mt-4">
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              {...register('email', {
+                required: 'Email is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Invalid email address'
+                }
+              })}
+              autoComplete="email"
+              autoFocus
+              error={!!errors.email}
+              helperText={errors.email ? errors.email.message : ''}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="name"
+              label="Your Name"
+              {...register('name', {
+                required: 'Name is required',
+              })}
+              autoComplete="email"
+              autoFocus
+              error={!!errors.name}
+              helperText={errors.name ? errors.name.message : ''}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Password"
+              type="password"
+              {...register('password', {
+                required: 'Password is required',
+              })}
+              autoComplete="current-password"
+              error={!!errors.password}
+              helperText={errors.password ? errors.password.message : ''}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              className="mt-8"
+            >
+              Register
+            </Button>
+            {error != "" ? (
+              <Alert variant="outlined" severity="error">
+                Error: {error}
+              </Alert>
+            ) : null}
+            <Grid container className='mt-2'>
+              <Grid item xs>
+              </Grid>
+              <Grid item>
+                <Link href="/login">
+                  <Typography variant='button' className='text-blue-900 underline'>
+                    {"Do you already have an account? Login"}
+                  </Typography>
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Grid>
+    </Grid>
   );
 }
