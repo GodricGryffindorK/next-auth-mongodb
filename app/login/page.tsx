@@ -1,6 +1,5 @@
 "use client"
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -8,7 +7,6 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { Alert } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import { signIn } from "next-auth/react";
@@ -30,7 +28,6 @@ export default function SignInSide() {
   const { register, handleSubmit, formState: { errors } } = useForm<SignInSchema>();
 
   const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
-    console.log(data)
     const res = await signIn("credentials", {
       email: data.email,
       password: data.password,
@@ -40,7 +37,6 @@ export default function SignInSide() {
       setError(res.error as string);
     }
     if (res?.ok) {
-      setError("OK");
       return router.push("/");
     }
   };
@@ -57,7 +53,7 @@ export default function SignInSide() {
         className="bg-cover bg-left"
         style={{ backgroundImage: 'url("./1 (4).png")' }}
       />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square className="flex items-center">
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square className="flex items-center px-16">
         <Box
           sx={{
             my: 8,
@@ -69,13 +65,13 @@ export default function SignInSide() {
           className="mx-auto"
         >
           <Image src={"/logo_grey.png"}
-            width={300}
+            width={400}
             height={500}
             alt="Picture of the author" 
-            className='mb-16'
+            className='mb-4'
             />
           <Typography component="h1" variant="h5">
-            Login with your account.
+            Login with your account
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }} className="mt-4">
             <TextField
