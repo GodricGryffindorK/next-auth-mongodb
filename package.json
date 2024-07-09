@@ -17,6 +17,7 @@
     "@types/pdfkit": "^0.13.4",
     "bcryptjs": "^2.4.3",
     "fs": "^0.0.1-security",
+    "mongodb": "^6.8.0",
     "mongoose": "^8.4.4",
     "next": "14.2.4",
     "next-auth": "^4.24.7",
