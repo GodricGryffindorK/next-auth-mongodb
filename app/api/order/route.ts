@@ -1,66 +1,209 @@
 import { NextRequest, NextResponse } from "next/server";
-import { orderRegister } from "@/actions/orderAdd"
-import * as nodemailer from "nodemailer"
-import { PDFDocument } from 'pdf-lib';
-import * as fs from "fs"
+import { orderRegister } from "@/actions/orderAdd";
+import * as nodemailer from "nodemailer";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import * as fs from "fs";
+
+const fieldNameMapping: Record<string, string> = {
+  business_name: "Razón Social",
+  ruth: "Rut",
+  commercial_business: "Giro Comercial",
+  commercial_address: "Dirección Comercial",
+  oc_num: "N° OC",
+  require_hes: "Requiere HES",
+  mail: "Correo",
+  phone: "Teléfono",
+  client_name: "Nombre Cliente",
+  customer_id: "Rut Cliente",
+  customer_email: "Correo Cliente",
+  customer_phone: "Teléfono Cliente",
+  delivery_type: "Tipo de entrega",
+  delivery_hour: "Plazo de entrega requerido",
+  delivery_date: "Fecha de entrega específica",
+  deliver_name: "Nombre Contacto",
+  deliver_phone: "Telefono Contacto",
+  deliver_address: "Dirección de Despacho",
+  bill_name: "Nombre Contacto",
+  bill_phone: "Telefono Contacto",
+  bill_email: "Correo de Contacto",
+};
+
+const result1: Record<string, string> = {
+  business_name: "agg",
+  ruth: "",
+  commercial_business: "sdfsds",
+  commercial_address: "",
+  oc_num: "",
+  require_hes: "yes",
+  mail: "",
+  phone: "",
+  client_name: "",
+  customer_id: "",
+  customer_email: "",
+  customer_phone: "",
+  delivery_type: "time",
+  delivery_hour: "",
+  deliver_name: "",
+  deliver_phone: "",
+  deliver_address: "",
+  bill_name: "",
+  bill_phone: "",
+  bill_email: "",
+  _id: "668cab9225f5d70e259a841a",
+  createdAt: "2024-07-09T03:16:34.124Z",
+  updatedAt: "2024-07-09T03:16:34.124Z",
+  //   __v: 0,
+};
 
 let transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        user: 'hopeinninfo@gmail.com',
-        pass: 'ztiqovfkiglvtmyx',
-    },
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "hopeinninfo@gmail.com",
+    pass: "ztiqovfkiglvtmyx",
+  },
 });
 
 const sendEmailWithAttachment = async (pdfData: Uint8Array) => {
-    try {
-        const mailOptions = {
-            from: 'roman.olender1997@gmail.com',
-            to: 'roman.olender1997@gmail.com',
-            subject: 'Someone Ordered',
-            text: 'View Orderinfo from Attached PDF File',
-            attachments: [{
-                filename: 'order.pdf',
-                content: pdfData
-            }]
-        };
+  try {
+    const mailOptions = {
+      from: "roman.olender1997@gmail.com",
+      to: "mont.skidev0201@gmail.com",
+      subject: "Someone Ordered",
+      text: "View Orderinfo from Attached PDF File",
+      attachments: [
+        {
+          filename: "order.pdf",
+          content: pdfData,
+        },
+      ],
+    };
 
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent:', info.response);
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent:", info.response);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 
-const generatePDF = async (result: string): Promise<Uint8Array> => {
-    const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage();
-    page.drawText(result, {
-        x: 50,
-        y: 500,
-        size: 12,
+const generatePDF = async (
+  result: Record<string, string>
+): Promise<Uint8Array> => {
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage();
+
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  page.drawText("Generated Report", {
+    x: 50,
+    y: 750,
+    size: 24,
+    font: fontBold,
+    color: rgb(0.2, 0.2, 0.2),
+  });
+
+  page.drawLine({
+    start: { x: 50, y: 740 },
+    end: { x: 550, y: 740 },
+    thickness: 2,
+    color: rgb(0.2, 0.2, 0.2),
+  });
+
+  let y = 700;
+
+  // Convert JSON to formatted string by categories
+  const categories = {
+    "DATOS DE LA EMPRESA": [
+      "business_name",
+      "ruth",
+      "commercial_business",
+      "commercial_address",
+      "oc_num",
+      "require_hes",
+      "mail",
+      "phone",
+    ],
+    "CDATOS DEL PEDIDO": [
+      "client_name",
+      "customer_id",
+      "customer_email",
+      "customer_phone",
+      "delivery_type",
+      "delivery_hour",
+      "delivery_date",
+    ],
+    "DATOS PARA LA ENTREGA DE PRODUCTOS": [
+      "deliver_name",
+      "deliver_phone",
+      "deliver_address",
+    ],
+    "DATOS PARA FACTURACION Y COBRANZA": [
+      "bill_name",
+      "bill_phone",
+      "bill_email",
+    ],
+  };
+
+  // Iterate over each category and add its content to the PDF
+
+  console.log(result);
+  for (const [category, fields] of Object.entries(categories)) {
+    // Draw the category title
+    page.drawText(category, {
+      x: 50,
+      y: y,
+      size: 18,
+      font: fontBold,
+      color: rgb(0.2, 0.2, 0.2),
     });
+    y -= 24; // Adjust y position for the next line
+    // Draw each field in the category
+    for (const field of fields) {
+      const displayName = fieldNameMapping[field] || field;
+      page.drawText(`${displayName}: ${result[field] || ""}`, {
+        x: 50,
+        y: y,
+        size: 12,
+        font: font,
+        color: rgb(0.2, 0.2, 0.2),
+        lineHeight: 14,
+        maxWidth: 500,
+      });
+      y -= 18; // Adjust y position for the next line
+    }
 
-    const pdfBytes = await pdfDoc.save();
-    return pdfBytes;
-}
+    y -= 18; // Additional space after each category
+  }
+
+  // Add footer
+  page.drawText("Generated by MyApp", {
+    x: 50,
+    y: 50,
+    size: 10,
+    font: font,
+    color: rgb(0.5, 0.5, 0.5),
+  });
+
+  const pdfBytes = await pdfDoc.save();
+  return pdfBytes;
+};
 
 export const PUT = async (req: Request) => {
-    const body = await req.json();
-    const result = await orderRegister(body);
-    if (result) {
-        const pdfData = await generatePDF(result.toString());
-        await sendEmailWithAttachment(pdfData);
-        return new NextResponse(JSON.stringify(result), {
-            status: 200,
-            statusText: "Created"
-        })
-    }
-    else
-        return new NextResponse(JSON.stringify(result), {
-            status: 500,
-            statusText: "Error"
-        })
-}
+  const body = await req.json();
+  const result = await orderRegister(body);
+  console.log("type: ", typeof result);
+  if (result) {
+    const pdfData = await generatePDF(result);
+    await sendEmailWithAttachment(pdfData);
+    return new NextResponse(JSON.stringify(result), {
+      status: 200,
+      statusText: "Created",
+    });
+  } else
+    return new NextResponse(JSON.stringify(result), {
+      status: 500,
+      statusText: "Error",
+    });
+};

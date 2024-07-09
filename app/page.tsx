@@ -134,7 +134,6 @@ export default function HorizontalLinearStepper() {
       acc[key as keyof FormData] = String(value);
       return acc;
     }, {} as FormData);
-    console.log(stringFormData)
     const response = await fetch("./api/order", {
       method: "PUT",
       headers: {
