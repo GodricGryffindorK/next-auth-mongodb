@@ -154,24 +154,28 @@ export default function HorizontalLinearStepper() {
   };
   const stepContent = [
     <CompanyForm
+      key="companyForm"
       register={register}
       error={errors}
       setValue={setValue}
       watch={watch}
     />,
     <OrderForm
+      key="orderForm"
       register={register}
       error={errors}
       setValue={setValue}
       watch={watch}
     />,
     <DeliverForm
+      key="deliverForm"
       register={register}
       error={errors}
       setValue={setValue}
       watch={watch}
     />,
     <BillForm
+      key="billForm"
       register={register}
       error={errors}
       setValue={setValue}

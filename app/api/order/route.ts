@@ -1,9 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { orderRegister } from "@/actions/orderAdd";
 import * as nodemailer from "nodemailer";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import { getSession } from "next-auth/react";
-import { NextApiRequest, NextApiResponse } from "next";
 
 const fieldNameMapping: Record<string, string> = {
   business_name: "Razón Social",
@@ -76,7 +74,7 @@ const sendEmailWithAttachment = async (pdfData: Uint8Array, email: string) => {
       attachments: [
         {
           filename: "order.pdf",
-          content: pdfData,
+          content: Buffer.from(pdfData),
         },
       ],
     };

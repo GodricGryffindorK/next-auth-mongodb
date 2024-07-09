@@ -14,14 +14,13 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       spacing: {
-        'TopSpace': '150px',
-        'ContainerSpace': '15%',
+        TopSpace: "150px",
+        ContainerSpace: "15%",
       },
     },
-    backgroundColor: theme => ({
-      ...theme('colors'),
-      'secondary': '#ed7d31'
-    })
+    backgroundColor: (theme) => ({
+      secondary: "#ed7d31",
+    }),
   },
   plugins: [],
 };
