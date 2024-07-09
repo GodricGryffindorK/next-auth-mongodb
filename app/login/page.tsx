@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useState } from 'react';
 import Image from 'next/image';
+// import { useUser } from '../context/UserContext';
 
 interface SignInSchema {
   email: string,
@@ -24,6 +25,7 @@ export default function SignInSide() {
 
   const [error, setError] = useState("");
   const router = useRouter();
+  // const { setUser } = useUser();
 
   const { register, handleSubmit, formState: { errors } } = useForm<SignInSchema>();
 
@@ -37,6 +39,8 @@ export default function SignInSide() {
       setError(res.error as string);
     }
     if (res?.ok) {
+      // const user = { email: data.email };
+      // setUser(user);
       return router.push("/");
     }
   };
@@ -67,9 +71,9 @@ export default function SignInSide() {
           <Image src={"/logo_grey.png"}
             width={400}
             height={500}
-            alt="Picture of the author" 
+            alt="Picture of the author"
             className='mb-4'
-            />
+          />
           <Typography component="h1" variant="h5">
             Login with your account
           </Typography>

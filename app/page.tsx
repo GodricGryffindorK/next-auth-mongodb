@@ -107,7 +107,8 @@ export default function HorizontalLinearStepper() {
     }
   );
   const [result, setResult] = React.useState<boolean | null>(null)
-  const { status } = useSession();
+  const { data: session, status } = useSession<boolean>();
+  const [submitting, setSubmitting] = React.useState<boolean | null>(false);
   const router = useRouter();
   const [activeStep, setActiveStep] = React.useState<number>(0);
 
@@ -134,13 +135,16 @@ export default function HorizontalLinearStepper() {
       acc[key as keyof FormData] = String(value);
       return acc;
     }, {} as FormData);
+    setSubmitting(true);
+    const email = (session?.user?.email);
     const response = await fetch("./api/order", {
       method: "PUT",
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(orderVals)
+      body: JSON.stringify({ orderVals, email: email })
     })
+    setSubmitting(false);
     if (response.ok == true) {
       setResult(true)
       setActiveStep(0)
@@ -148,7 +152,6 @@ export default function HorizontalLinearStepper() {
       setResult(false);
     }
   };
-
   const stepContent = [
     <CompanyForm
       register={register}
@@ -177,7 +180,7 @@ export default function HorizontalLinearStepper() {
   ]
 
   const showSession = () => {
-    if (status === "authenticated") {
+    if (status === "authenticated" && (submitting === false)) {
       return (
         <>
           <Header />
@@ -339,7 +342,7 @@ export default function HorizontalLinearStepper() {
           </div>
         </>
       );
-    } else if (status === "loading") {
+    } else if (status === "loading" || (submitting === true)) {
       return <Loading />
     } else {
       router.push("/login")

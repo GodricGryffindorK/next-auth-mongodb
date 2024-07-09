@@ -12,6 +12,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 
 function Header() {
     const router = useRouter();
@@ -21,7 +22,8 @@ function Header() {
             <AppBar component="nav">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <img src='./logo.png' className='h-[60px]'/>
+                        <img src='./logo.png' className='h-[60px]' />
+                        {/* <Image src='/logo.png' width={60} height={60} className='h-[60px]' alt="Logo" /> */}
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         </Box>

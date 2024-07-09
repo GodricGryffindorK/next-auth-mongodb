@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { orderRegister } from "@/actions/orderAdd";
 import * as nodemailer from "nodemailer";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import * as fs from "fs";
+import { getSession } from "next-auth/react";
+import { NextApiRequest, NextApiResponse } from "next";
 
 const fieldNameMapping: Record<string, string> = {
   business_name: "Razón Social",
@@ -65,13 +66,13 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-const sendEmailWithAttachment = async (pdfData: Uint8Array) => {
+const sendEmailWithAttachment = async (pdfData: Uint8Array, email: string) => {
   try {
     const mailOptions = {
       from: "roman.olender1997@gmail.com",
       to: "mont.skidev0201@gmail.com",
       subject: "Someone Ordered",
-      text: "View Orderinfo from Attached PDF File",
+      text: `Ha llegado un pedido de ${email}.`,
       attachments: [
         {
           filename: "order.pdf",
@@ -96,7 +97,7 @@ const generatePDF = async (
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-  page.drawText("Generated Report", {
+  page.drawText("Tabla de pedidos", {
     x: 50,
     y: 750,
     size: 24,
@@ -148,7 +149,7 @@ const generatePDF = async (
 
   // Iterate over each category and add its content to the PDF
 
-  console.log(result);
+  //   console.log(result);
   for (const [category, fields] of Object.entries(categories)) {
     // Draw the category title
     page.drawText(category, {
@@ -192,11 +193,12 @@ const generatePDF = async (
 
 export const PUT = async (req: Request) => {
   const body = await req.json();
-  const result = await orderRegister(body);
-  console.log("type: ", typeof result);
+  console.log(body);
+  const result = await orderRegister(body.orderVals);
+
   if (result) {
     const pdfData = await generatePDF(result);
-    await sendEmailWithAttachment(pdfData);
+    await sendEmailWithAttachment(pdfData, body.email);
     return new NextResponse(JSON.stringify(result), {
       status: 200,
       statusText: "Created",
