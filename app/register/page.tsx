@@ -36,12 +36,12 @@ export default function SignInSide() {
       password: data.password,
     });
     console.log(res);
-    if (res?.error) {
-      setError(res.error as string);
-      return;
-    } else {
-      return router.push("/login");
-    }
+    // if (res?.error) {
+    //   setError(res.error as string);
+    //   return;
+    // } else {
+    //   return router.push("/login");
+    // }
   };
 
 
