@@ -68,7 +68,7 @@ const sendEmailWithAttachment = async (pdfData: Uint8Array, email: string) => {
   try {
     const mailOptions = {
       from: "roman.olender1997@gmail.com",
-      to: "mont.skidev0201@gmail.com",
+      to: "carolapazmark@gmail.com",
       subject: "Someone Ordered",
       text: `Ha llegado un pedido de ${email}.`,
       attachments: [
