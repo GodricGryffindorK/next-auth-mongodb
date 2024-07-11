@@ -18,7 +18,7 @@ const UserSchema = new Schema<UserDocument>({
     required: [true, "Email is required"],
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      "Email is invalid",
+      "Email is invalid.",
     ],
   },
   password: {
@@ -27,7 +27,7 @@ const UserSchema = new Schema<UserDocument>({
   },
   name: {
     type: String,
-    required: [true, "Name is required"]
+    required: [true, "Name is required."]
   }
 },
 {

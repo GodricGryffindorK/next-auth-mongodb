@@ -51,7 +51,6 @@ const result1: Record<string, string> = {
   _id: "668cab9225f5d70e259a841a",
   createdAt: "2024-07-09T03:16:34.124Z",
   updatedAt: "2024-07-09T03:16:34.124Z",
-  //   __v: 0,
 };
 
 let transporter = nodemailer.createTransport({
